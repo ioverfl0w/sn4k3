@@ -1,5 +1,6 @@
 package org.wadec.snake;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
@@ -29,33 +30,72 @@ public class Snake extends Component implements KeyListener, Runnable {
 
     public void updatePlot() {
         int d = currentDirection, h = currentHeading;
-        System.out.printf("d:%s\th:%s\n", d, h);
+        //System.out.printf("d:%s\th:%s\n", d, h);
 
-        //generates new heading
-        System.out.println("d-h=" + (d-h));
-        if (d - h == 0 ) {
+        //gets new header
+        if (isAcceptable(d,h))
+            h = d;
+
+        //generates new head plot
+        int prevPlot[] = currLocation;
+        switch (h) {
+            case NORTH:
+                currLocation = new int[] {prevPlot[0], prevPlot[1] - MOVE_RATE};
+                break;
+            case SOUTH:
+                currLocation = new int[] {prevPlot[0], prevPlot[1] + MOVE_RATE};
+                break;
+            case EAST:
+                currLocation = new int[] {prevPlot[0] + MOVE_RATE, prevPlot[1]};
+                break;
+            case WEST:
+                currLocation = new int[] {prevPlot[0] - MOVE_RATE, prevPlot[1]};
+                break;
         }
+
+        //makes tail plot
+        int[][] tail = new int[tailPlot.length][2];
+        tail[0] = prevPlot;
+        for (int i = 1; i < tail.length; i++)
+            tail[i] = tailPlot[i - 1];
+
+        //declare new values
+        currentHeading = h;
+        tailPlot = tail;
+
+        //redraw frame
+        repaint();
+    }
+
+    private boolean isAcceptable(int d, int h) {
+        return (h == WEST && d == NORTH) || (h == NORTH && d == WEST) || (h - 90 == d || h + 90 == d);
     }
 
     @Override
     public void paint(Graphics g) {
-        //draw main box
-        g.fillRect(currLocation[0] - 5, currLocation[1] + 5, 10, 10);
-
         //draw tail
+        g.setColor(Color.LIGHT_GRAY);
         for (int i = 0; i < tailPlot.length; i++) {
             if (tailPlot[i][0] == -1) {
                 break;
             }
-            g.fillRect(tailPlot[i][0] - 1, tailPlot[i][1] + 1, 2, 2);
+            g.fillRect(tailPlot[i][0] - 5, tailPlot[i][1] + 5, 10, 10);
         }
+
+        //draw main box
+        g.setColor(Color.BLACK);
+        g.fillRect(currLocation[0] - 5, currLocation[1] + 5, 10, 10);
     }
 
     public void run() {
         try {
             while (true) {
-                Thread.sleep(200);
+                long s = System.currentTimeMillis();
+
+                //update coord grid
                 updatePlot();
+
+                Thread.sleep(100 - (System.currentTimeMillis() - s));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -84,6 +124,7 @@ public class Snake extends Component implements KeyListener, Runnable {
 
     public void keyReleased(KeyEvent e) {
     }
+    public static final int MOVE_RATE = 10;
     public static final int NORTH = 0;
     public static final int EAST = 90;
     public static final int SOUTH = 180;
