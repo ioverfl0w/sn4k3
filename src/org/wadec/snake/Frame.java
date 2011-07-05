@@ -24,7 +24,10 @@ public class Frame extends JFrame {
         //create play field
         Snake snake = new Snake(getWidth() / 2, getHeight() / 2);
         add(snake);
-        snake.addKeyListener(snake);
+        addKeyListener(snake);
+
+        //start game thread
+        new Thread(snake).start();
     }
 
     public static void main(String[] args) {
