@@ -33,13 +33,29 @@ public class Game {
     }
 
     public void update(Snake s) {
-        int x = s.getCurrentLocation()[0], y = s.getCurrentLocation()[1];
+        int[] c = s.getCurrentLocation();
+        int x = c[0], y = c[1];
 
         //check if collide with bounds
         if (x < bounds[0] || x > bounds[2] || y < bounds[1] || y > bounds[3]) {
-            s.clearGrid();
-            setActive(false);
+            kill(s);
+            return;
         }
+
+        //check if collide with tail
+        for (int[] z : s.getTailPlot()) {
+            if (z[0] == -1)
+                break;
+            if (z[0] == c[0] && z[1] == c[1]) {
+                kill(s);
+                return;
+            }
+        }
+    }
+
+    public void kill(Snake s) {
+        s.clearGrid();
+        setActive(false);
     }
 
     public void draw(Graphics g) {

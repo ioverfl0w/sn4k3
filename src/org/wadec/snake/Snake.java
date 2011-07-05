@@ -126,6 +126,10 @@ public class Snake extends Component implements KeyListener, Runnable {
         return currLocation;
     }
 
+    public int[][] getTailPlot() {
+        return tailPlot;
+    }
+
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
             case UP_ARROW:
