@@ -12,16 +12,27 @@ import java.awt.event.KeyListener;
  */
 public class Snake extends Component implements KeyListener, Runnable {
 
+    private Game game;
     private int currentDirection = NORTH;
     private int currentHeading = currentDirection;
     private int[] currLocation;
     private int[][] tailPlot = new int[TAIL_PLOT_LEN][2];
+    private final int[] start;
 
-    public Snake(int startX, int startY) {
+    public Snake(int startX, int startY, Game g) {
         currLocation = new int[]{startX, startY};
         for (int i = 0; i < tailPlot.length; i++) {
             tailPlot[i] = new int[]{-1, 0};
         }
+        game = g;
+        start = currLocation;
+    }
+
+    public void clearGrid() {
+        currentDirection = NORTH;
+        currentHeading = currentDirection;
+        currLocation = start;
+        tailPlot = new int[TAIL_PLOT_LEN][2];
     }
 
     public void changeDirection(int direction) {
@@ -29,17 +40,14 @@ public class Snake extends Component implements KeyListener, Runnable {
     }
 
     public void updatePlot() {
-        int d = currentDirection, h = currentHeading;
-        //System.out.printf("d:%s\th:%s\n", d, h);
-
         //gets new header
-        if (isAcceptable(d, h)) {
-            h = d;
+        if (isAcceptable(currentDirection, currentHeading)) {
+            currentHeading = currentDirection;
         }
 
         //generates new head plot
         int prevPlot[] = currLocation;
-        switch (h) {
+        switch (currentHeading) {
             case NORTH:
                 currLocation = new int[]{prevPlot[0], prevPlot[1] - MOVE_RATE};
                 break;
@@ -54,15 +62,12 @@ public class Snake extends Component implements KeyListener, Runnable {
                 break;
         }
 
-        //makes tail plot
+        //creates new tail plot
         int[][] tail = new int[tailPlot.length][2];
         tail[0] = prevPlot;
         for (int i = 1; i < tail.length; i++) {
             tail[i] = tailPlot[i - 1];
         }
-
-        //declare new values
-        currentHeading = h;
         tailPlot = tail;
 
         //redraw frame
@@ -75,21 +80,28 @@ public class Snake extends Component implements KeyListener, Runnable {
 
     @Override
     public void paint(Graphics g) {
-        //draw tail
-        g.setColor(Color.LIGHT_GRAY);
-        for (int i = 0; i < tailPlot.length; i++) {
-            if (tailPlot[i][0] == -1) {
-                break;
+
+        //checks for active game session
+        if (game.isActive()) {
+            //draw tail
+            g.setColor(Color.LIGHT_GRAY);
+            for (int i = 0; i < tailPlot.length; i++) {
+                if (tailPlot[i][0] == -1) {
+                    break;
+                }
+                if (i > (tailPlot.length / 2)) {
+                    g.setColor(Color.WHITE);
+                }
+                g.fillRect(tailPlot[i][0] - 5, tailPlot[i][1] + 5, 10, 10);
             }
-            if (i > (tailPlot.length / 2)) {
-                g.setColor(Color.WHITE);
-            }
-            g.fillRect(tailPlot[i][0] - 5, tailPlot[i][1] + 5, 10, 10);
+
+            //draw main box
+            g.setColor(Color.RED);
+            g.fillRect(currLocation[0] - 5, currLocation[1] + 5, 10, 10);
         }
 
-        //draw main box
-        g.setColor(Color.RED);
-        g.fillRect(currLocation[0] - 5, currLocation[1] + 5, 10, 10);
+        //draw game frame, score, items, etc
+        game.draw(g);
     }
 
     public void run() {
@@ -98,13 +110,20 @@ public class Snake extends Component implements KeyListener, Runnable {
                 long s = System.currentTimeMillis();
 
                 //update coord grid
-                updatePlot();
+                if (game.isActive()) {
+                    updatePlot();
+                    game.update(this);
+                }
 
                 Thread.sleep(100 - (System.currentTimeMillis() - s));
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    public int[] getCurrentLocation() {
+        return currLocation;
     }
 
     public void keyPressed(KeyEvent e) {
@@ -121,7 +140,14 @@ public class Snake extends Component implements KeyListener, Runnable {
             case RIGHT_ARROW:
                 changeDirection(EAST);
                 return;
+            case 83:// S
+                if (!game.isActive()) {
+                    game.setActive(true);
+                    System.out.println("game now active");
+                }
+                return;
         }
+        //System.out.println("unhandled char: " + e.getKeyChar() + "\t" + e.getKeyCode());
     }
 
     public void keyTyped(KeyEvent e) {

@@ -8,6 +8,8 @@ import javax.swing.JFrame;
  */
 public class Frame extends JFrame {
 
+    public Snake snake;
+
     public Frame() {
         setTitle("sn4k3");
         construct();
@@ -20,9 +22,11 @@ public class Frame extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        //create game frame
+        Game frame = new Game(getWidth(), getHeight());
 
         //create play field
-        Snake snake = new Snake(getWidth() / 2, getHeight() / 2);
+        snake = new Snake(getWidth() / 2, getHeight() / 2, frame);
         add(snake);
         addKeyListener(snake);
 
@@ -31,6 +35,6 @@ public class Frame extends JFrame {
     }
 
     public static void main(String[] args) {
-        Frame frame = new Frame();
+        new Frame();
     }
 }
