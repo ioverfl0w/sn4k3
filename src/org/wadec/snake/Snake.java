@@ -144,32 +144,32 @@ public class Snake extends Component implements KeyListener, Runnable {
 
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case UP_ARROW:
+            case KeyEvent.VK_UP:
                 changeDirection(NORTH);
                 return;
-            case DOWN_ARROW:
+            case KeyEvent.VK_DOWN:
                 changeDirection(SOUTH);
                 return;
-            case LEFT_ARROW:
+            case KeyEvent.VK_LEFT:
                 changeDirection(WEST);
                 return;
-            case RIGHT_ARROW:
+            case KeyEvent.VK_RIGHT:
                 changeDirection(EAST);
                 return;
-            case 83:// S
+            case KeyEvent.VK_S:// S
                 if (!game.isActive()) {
                     game.generateObject();
                     game.setActive(true);
                     System.out.println("game now active");
                 }
                 return;
-            case 107:// +
+            case KeyEvent.VK_U:// +
                 if (!game.isActive()) {
                     game.addDifficulty();
                     repaint();
                 }
                 return;
-            case 109:// -
+            case KeyEvent.VK_D:// -
                 if (!game.isActive()) {
                     game.delDifficulty();
                     repaint();
@@ -189,8 +189,4 @@ public class Snake extends Component implements KeyListener, Runnable {
     public static final int EAST = 90;
     public static final int SOUTH = 180;
     public static final int WEST = 270;
-    public static final int LEFT_ARROW = 37;
-    public static final int UP_ARROW = 38;
-    public static final int RIGHT_ARROW = 39;
-    public static final int DOWN_ARROW = 40;
 }
