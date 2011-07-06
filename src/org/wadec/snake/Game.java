@@ -21,8 +21,6 @@ public class Game {
     public Game(int frameX, int frameY) {
         gframe = new int[]{15, 15, frameX - 40, frameY - 100};
         bounds = new int[]{gframe[0] - 1, gframe[1] - 6, gframe[2] + 11, gframe[3] + 1};
-        for (int i = 0; i < bounds.length; i++)
-            System.out.println(bounds[i]);
     }
 
     public void addPoint() {
