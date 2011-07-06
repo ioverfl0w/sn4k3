@@ -21,6 +21,8 @@ public class Game {
     public Game(int frameX, int frameY) {
         gframe = new int[]{15, 15, frameX - 40, frameY - 100};
         bounds = new int[]{gframe[0] - 1, gframe[1] - 6, gframe[2] + 11, gframe[3] + 1};
+        for (int i = 0; i < bounds.length; i++)
+            System.out.println(bounds[i]);
     }
 
     public void addPoint() {
@@ -49,8 +51,8 @@ public class Game {
 
     public void generateObject() {
         currObj = new int[]{
-                    (rand.nextInt(60) + 1) * 10, // X coord
-                    (rand.nextInt(30) + 1) * 10, // Y coord
+                    (rand.nextInt(59) + 2) * 10, // X coord
+                    (rand.nextInt(29) + 1) * 10, // Y coord
                 };
 
         //System.out.println("OBJECT: " + currObj[0] + "," + currObj[1]);
