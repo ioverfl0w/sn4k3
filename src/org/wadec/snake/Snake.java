@@ -16,7 +16,7 @@ public class Snake extends Component implements KeyListener, Runnable {
     private int currentDirection = NORTH;
     private int currentHeading = currentDirection;
     private int[] currLocation;
-    private int[][] tailPlot = new int[TAIL_PLOT_LEN][2];
+    private int[][] tailPlot = new int[2][2];
     private final int[] start;
 
     public Snake(int startX, int startY, Game g) {
@@ -32,7 +32,22 @@ public class Snake extends Component implements KeyListener, Runnable {
         currentDirection = NORTH;
         currentHeading = currentDirection;
         currLocation = start;
-        tailPlot = new int[TAIL_PLOT_LEN][2];
+        tailPlot = new int[2][2];
+        for (int i = 0; i < tailPlot.length; i++) {
+            tailPlot[i] = new int[]{-1, 0};
+        }
+    }
+
+    public void boostTailLen(int boost) {
+        int[][] tail = new int[tailPlot.length + boost][2];
+        for (int i = 0; i < tail.length; i++) {
+            if (i >= tailPlot.length) {
+                tail[i] = new int[]{-1, 0};
+                continue;
+            }
+            tail[i] = tailPlot[i];
+        }
+        tailPlot = tail;
     }
 
     public void changeDirection(int direction) {
@@ -89,9 +104,6 @@ public class Snake extends Component implements KeyListener, Runnable {
                 if (tailPlot[i][0] == -1) {
                     break;
                 }
-                if (i > (tailPlot.length / 2)) {
-                    g.setColor(Color.WHITE);
-                }
                 g.fillRect(tailPlot[i][0] - 5, tailPlot[i][1] + 5, 10, 10);
             }
 
@@ -146,12 +158,25 @@ public class Snake extends Component implements KeyListener, Runnable {
                 return;
             case 83:// S
                 if (!game.isActive()) {
+                    game.generateObject();
                     game.setActive(true);
                     System.out.println("game now active");
                 }
                 return;
+            case 107:// +
+                if (!game.isActive()) {
+                    game.addDifficulty();
+                    repaint();
+                }
+                return;
+            case 109:// -
+                if (!game.isActive()) {
+                    game.delDifficulty();
+                    repaint();
+                }
+                return;
         }
-        //System.out.println("unhandled char: " + e.getKeyChar() + "\t" + e.getKeyCode());
+        System.out.println("unhandled char: " + e.getKeyChar() + "\t" + e.getKeyCode());
     }
 
     public void keyTyped(KeyEvent e) {
@@ -160,7 +185,6 @@ public class Snake extends Component implements KeyListener, Runnable {
     public void keyReleased(KeyEvent e) {
     }
     public static final int MOVE_RATE = 10;
-    public static final int TAIL_PLOT_LEN = 15;
     public static final int NORTH = 0;
     public static final int EAST = 90;
     public static final int SOUTH = 180;
