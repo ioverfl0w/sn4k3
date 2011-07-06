@@ -117,6 +117,7 @@ public class Snake extends Component implements KeyListener, Runnable {
     }
 
     public void run() {
+        game.set(this);
         try {
             while (true) {
                 long s = System.currentTimeMillis();
@@ -124,7 +125,7 @@ public class Snake extends Component implements KeyListener, Runnable {
                 //update coord grid
                 if (game.isActive()) {
                     updatePlot();
-                    game.update(this);
+                    game.update();
                 }
 
                 Thread.sleep(100 - (System.currentTimeMillis() - s));
@@ -140,6 +141,10 @@ public class Snake extends Component implements KeyListener, Runnable {
 
     public int[][] getTailPlot() {
         return tailPlot;
+    }
+
+    public int getTailLen() {
+        return tailPlot.length;
     }
 
     public void keyPressed(KeyEvent e) {
