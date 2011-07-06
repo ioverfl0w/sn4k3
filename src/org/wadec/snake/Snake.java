@@ -176,7 +176,7 @@ public class Snake extends Component implements KeyListener, Runnable {
                 }
                 return;
         }
-        System.out.println("unhandled char: " + e.getKeyChar() + "\t" + e.getKeyCode());
+        //System.out.println("unhandled char: " + e.getKeyChar() + "\t" + e.getKeyCode());
     }
 
     public void keyTyped(KeyEvent e) {

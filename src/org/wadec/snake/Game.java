@@ -24,7 +24,7 @@ public class Game {
     }
 
     public void addPoint() {
-        score += (100 * difficulty);
+        score += 100;
     }
 
     public boolean isActive() {
@@ -53,7 +53,7 @@ public class Game {
                     (rand.nextInt(30) + 1) * 10, // Y coord
                 };
 
-        System.out.println("OBJECT: " + currObj[0] + "," + currObj[1]);
+        //System.out.println("OBJECT: " + currObj[0] + "," + currObj[1]);
     }
 
     public void update(Snake s) {
